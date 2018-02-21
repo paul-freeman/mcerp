@@ -1,6 +1,6 @@
 """
 ===============================================================================
-mcerp: Real-time latin-hypercube-sampling-based Monte Carlo Error Propagation
+mcerp3: Real-time latin-hypercube-sampling-based Monte Carlo Error Propagation
 ===============================================================================
 
 Generalizes many statistical functions that work on numeric objects (from the 
@@ -15,8 +15,10 @@ http://docs.scipy.org/doc/scipy/reference/stats.html#statistical-functions
 
 Author: Abraham Lee
 Copyright: 2013
+
+Updates to Python 3 by Paul Freeman, 2018
 """
-from mcerp import UncertainFunction
+from mcerp3 import UncertainFunction
 import numpy as np
 import scipy.stats as ss
 

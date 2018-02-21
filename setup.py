@@ -10,7 +10,7 @@ from setuptools import setup
     ## 2.x
     #from distutils.command.build_py import build_py
 
-import mcerp
+import mcerp3
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
@@ -19,17 +19,17 @@ readme = 'README.rst'
 
 #distutils.core.setup(
 setup(
-    name='mcerp',
-    version=mcerp.__version__,
-    author='Abraham Lee',
+    name='mcerp3',
+    version=mcerp3.__version__,
+    author='Paul Freeman',
     description='Real-time latin-hypercube-sampling-based Monte Carlo Error Propagation',
-    author_email='tisimst@gmail.com',
-    url='https://github.com/tisimst/mcerp',
+    author_email='paul.freeman.cs@gmail.com',
+    url='https://github.com/paul-freeman/mcerp3',
     license='BSD License',
     long_description=read(readme),
     package_data={'': [readme]},
     packages=[
-        'mcerp', 
+        'mcerp3', 
         ],
     install_requires=[
         'numpy', 
@@ -68,13 +68,10 @@ setup(
         'Operating System :: POSIX',
         'Operating System :: Unix',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
-        #'Programming Language :: Python :: 3',
-        #'Programming Language :: Python :: 3.0',
-        #'Programming Language :: Python :: 3.1',
-        #'Programming Language :: Python :: 3.2',
-        #'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Education',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Chemistry',
