@@ -1,3 +1,8 @@
+mcerp3-1.0.1
+============
+
+- changed build script to restrict install to systems running scipy <= 0.19.1
+
 mcerp3-1.0.0
 ============
 
