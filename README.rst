@@ -75,6 +75,9 @@ or ``easy_install``), otherwise they will need to be installed manually:
 These packages come standard in *Python(x,y)*, *Spyder*, and other 
 scientific computing python bundles.
 
+*Currently, this package will not support SciPy >= 1.0 due to the removal of
+the signaltonoise function from scipy.stats.*
+
 How to install
 --------------
 
