@@ -33,7 +33,7 @@ setup(
         ],
     install_requires=[
         'numpy', 
-        'scipy', 
+        'scipy <=0.19.1', # support scipy.stats.signaltonoise
         'matplotlib'
         ],
     keywords=[
