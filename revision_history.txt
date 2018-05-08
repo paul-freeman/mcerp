@@ -1,3 +1,8 @@
+mcerp3-1.0.2
+============
+
+- updated code to support SciPy >= 1.0.0
+
 mcerp3-1.0.1
 ============
 

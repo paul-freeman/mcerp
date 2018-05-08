@@ -31,6 +31,7 @@ What's New In This Release
 - officially adds the 3-clause BSD licesnse text to the software
   (this license has been specified in the mcerp PyPI package for years)  
 
+- supports SciPy >= 1.0 by removing the scipy.stats.signaltonoise function
 
 Main Features
 =============
@@ -74,9 +75,6 @@ or ``easy_install``), otherwise they will need to be installed manually:
 
 These packages come standard in *Python(x,y)*, *Spyder*, and other 
 scientific computing python bundles.
-
-*Currently, this package will not support SciPy >= 1.0 due to the removal of
-the signaltonoise function from scipy.stats.*
 
 How to install
 --------------

@@ -14,7 +14,7 @@ import scipy.stats as ss
 import matplotlib.pyplot as plt
 from .lhd import lhd
 
-__version_info__ = (1, 0, 1)
+__version_info__ = (1, 0, 2)
 __version__ = '.'.join(map(str, __version_info__))
 
 __author__ = 'Abraham Lee'
@@ -29,7 +29,7 @@ class NotUpcast(Exception):
 def to_uncertain_func(x):
     """
     Transforms x into an UncertainFunction-compatible object,
-    unless it is already an UncertainFunction (in which case x is returned 
+    unless it is already an UncertainFunction (in which case x is returned
     unchanged).
 
     Raises an exception unless 'x' belongs to some specific classes of
@@ -43,21 +43,21 @@ def to_uncertain_func(x):
     elif isinstance(x, CONSTANT_TYPES):
         # No variable => no derivative to define:
         return UncertainFunction([x]*npts)
-    
+
     raise NotUpcast("%s cannot be converted to a number with"
                     " uncertainty" % type(x))
-    
-    
+
+
 
 class UncertainFunction(object):
     """
-    UncertainFunction objects represent the uncertainty of a result of 
+    UncertainFunction objects represent the uncertainty of a result of
     calculations with uncertain variables. Nearly all basic mathematical
     operations are supported.
-    
+
     This class is mostly intended for internal use.
-    
-    
+
+
     """
     def __init__(self, mcpts):
         self._mcpts = np.atleast_1d(mcpts).flatten()
@@ -70,7 +70,7 @@ class UncertainFunction(object):
         """
         mn = np.mean(self._mcpts)
         return mn
-    
+
     @property
     def var(self):
         """
@@ -79,42 +79,42 @@ class UncertainFunction(object):
         mn = self.mean
         vr = np.mean((self._mcpts - mn)**2)
         return vr
-        
+
     @property
     def std(self):
         """
-        Standard deviation value as a result of an uncertainty calculation, 
+        Standard deviation value as a result of an uncertainty calculation,
         defined as::
-            
+
                     ________
             std = \/variance
-            
+
         """
         return self.var**0.5
-    
+
     @property
     def skew(self):
         """
         Skewness coefficient value as a result of an uncertainty calculation,
         defined as::
-            
+
               _____     m3
             \/beta1 = ------
                       std**3
-        
+
         where m3 is the third central moment and std is the standard deviation
         """
         mn = self.mean
         sd = self.std
         sk = 0.0 if abs(sd)<=1e-8 else np.mean((self._mcpts - mn)**3)/sd**3
         return sk
-    
+
     @property
     def kurt(self):
         """
         Kurtosis coefficient value as a result of an uncertainty calculation,
         defined as::
-            
+
                       m4
             beta2 = ------
                     std**4
@@ -125,7 +125,7 @@ class UncertainFunction(object):
         sd = self.std
         kt = 0.0 if abs(sd)<=1e-8 else np.mean((self._mcpts - mn)**4)/sd**4
         return kt
-    
+
     @property
     def stats(self):
         """
@@ -137,23 +137,23 @@ class UncertainFunction(object):
         sk = self.skew
         kt = self.kurt
         return [mn, vr, sk, kt]
-    
+
     def percentile(self, val):
         """
         Get the distribution value at a given percentile or set of percentiles.
         This follows the NIST method for calculating percentiles.
-        
+
         Parameters
         ----------
         val : scalar or array
             Either a single value or an array of values between 0 and 1.
-        
+
         Returns
         -------
         out : scalar or array
             The actual distribution value that appears at the requested
             percentile value or values
-            
+
         """
         try:
             # test to see if an input is given as an array
@@ -171,11 +171,11 @@ class UncertainFunction(object):
         if isinstance(val, np.ndarray):
             out = np.array(out)
         return out
-    
+
     def _to_general_representation(self,str_func):
         mn, vr, sk, kt = self.stats
         return ('uv({:}, {:}, {:}, {:})'.format(
-            str_func(mn), str_func(vr), str_func(sk), str_func(kt)) 
+            str_func(mn), str_func(vr), str_func(sk), str_func(kt))
             if any([vr, sk, kt]) else str_func(mn))
 
     def __str__(self):
@@ -192,17 +192,17 @@ class UncertainFunction(object):
             - Variance
             - Standardized Skewness Coefficient
             - Standardized Kurtosis Coefficient
-        
+
         For a standard Normal distribution, these are [0, 1, 0, 3].
-        
+
         If the object has an associated tag, this is presented. If the optional
         ``name`` kwarg is utilized, this is presented as with the moments.
         Otherwise, no unique name is presented.
-        
+
         Example
         =======
         ::
-        
+
             >>> x = N(0, 1, 'x')
             >>> x.describe()  # print tag since assigned
             MCERP Uncertain Value (x):
@@ -211,7 +211,7 @@ class UncertainFunction(object):
             >>> x.describe('foobar')  # 'name' kwarg takes precedence
             MCERP Uncertain Value (foobar):
             ...
-            
+
             >>> y = x**2
             >>> y.describe('y')  # print name since assigned
             MCERP Uncertain Value (y):
@@ -234,22 +234,22 @@ class UncertainFunction(object):
         s += ' > Skewness Coefficient... {: }\n'.format(sk)
         s += ' > Kurtosis Coefficient... {: }\n'.format(kt)
         print(s)
-        
+
     def plot(self, hist=False, show=False, **kwargs):
         """
         Plot the distribution of the UncertainFunction. By default, the
         distribution is shown with a kernel density estimate (kde).
-        
+
         Optional
         --------
         hist : bool
             If true, a density histogram is displayed (histtype='stepfilled')
         show : bool
-            If ``True``, the figure will be displayed after plotting the 
+            If ``True``, the figure will be displayed after plotting the
             distribution. If ``False``, an explicit call to ``plt.show()`` is
             required to display the figure.
         kwargs : any valid matplotlib.pyplot.plot or .hist kwarg
-        
+
         """
         vals = self._mcpts
         low = min(vals)
@@ -259,14 +259,14 @@ class UncertainFunction(object):
         xp = np.linspace(low,high,100)
 
         if hist:
-            h = plt.hist(vals, bins=int(np.sqrt(len(vals)) + 0.5), 
+            h = plt.hist(vals, bins=int(np.sqrt(len(vals)) + 0.5),
                      histtype='stepfilled', normed=True, **kwargs)
             plt.ylim(0, 1.1*h[0].max())
         else:
             plt.plot(xp, p.evaluate(xp), **kwargs)
 
         plt.xlim(low - (high - low)*0.1, high + (high - low)*0.1)
-        
+
         if show:
             self.show()
 
@@ -282,7 +282,7 @@ class UncertainFunction(object):
         uf = list(map(to_uncertain_func, [self, val]))
         mcpts = uf[0]._mcpts + uf[1]._mcpts
         return UncertainFunction(mcpts)
-        
+
     def __mul__(self, val):
         uf = list(map(to_uncertain_func, [self, val]))
         mcpts = uf[0]._mcpts * uf[1]._mcpts
@@ -292,7 +292,7 @@ class UncertainFunction(object):
         uf = list(map(to_uncertain_func, [self, val]))
         mcpts = uf[0]._mcpts * uf[1]._mcpts
         return UncertainFunction(mcpts)
-        
+
     def __sub__(self, val):
         uf = list(map(to_uncertain_func, [self, val]))
         mcpts = uf[0]._mcpts - uf[1]._mcpts
@@ -302,7 +302,7 @@ class UncertainFunction(object):
         uf = list(map(to_uncertain_func, [self, val]))
         mcpts = uf[1]._mcpts - uf[0]._mcpts
         return UncertainFunction(mcpts)
-        
+
     def __div__(self, val):
         uf = list(map(to_uncertain_func, [self, val]))
         mcpts = uf[0]._mcpts/uf[1]._mcpts
@@ -312,7 +312,7 @@ class UncertainFunction(object):
         uf = list(map(to_uncertain_func, [self, val]))
         mcpts = uf[1]._mcpts/uf[0]._mcpts
         return UncertainFunction(mcpts)
-        
+
     def __truediv__(self, val):
         uf = list(map(to_uncertain_func, [self, val]))
         mcpts = uf[0]._mcpts/uf[1]._mcpts
@@ -322,7 +322,7 @@ class UncertainFunction(object):
         uf = list(map(to_uncertain_func, [self, val]))
         mcpts = uf[1]._mcpts/uf[0]._mcpts
         return UncertainFunction(mcpts)
-        
+
     def __pow__(self, val):
         uf = list(map(to_uncertain_func, [self, val]))
         mcpts = uf[0]._mcpts**uf[1]._mcpts
@@ -332,19 +332,19 @@ class UncertainFunction(object):
         uf = list(map(to_uncertain_func, [self, val]))
         mcpts = uf[1]._mcpts**uf[0]._mcpts
         return UncertainFunction(mcpts)
-    
+
     def __neg__(self):
         mcpts = -self._mcpts
         return UncertainFunction(mcpts)
-        
+
     def __pos__(self):
         mcpts = self._mcpts
         return UncertainFunction(mcpts)
-    
+
     def __abs__(self):
         mcpts = np.abs(self._mcpts)
         return UncertainFunction(mcpts)
-    
+
     def __eq__(self, val):
         """
         If we are comparing two distributions, check the resulting moments. If
@@ -352,21 +352,21 @@ class UncertainFunction(object):
         we can know that it is actually the same distribution we are comparing
         ``self`` to, otherwise, at least one statistical moment will be non-
         zero.
-        
+
         If we are comparing ``self`` to a scalar, just do a normal comparison
         so that if the underlying distribution looks like a PMF, a meaningful
         probability of self==val is returned. This can still work quite safely
         for PDF distributions since the likelihood of comparing self to an
         actual sampled value is negligible when mcerp3.npts is large.
-        
+
         Examples:
-        
+
             >>> h = H(50, 5, 10)  # Hypergeometric distribution (PMF)
             >>> h==4  # what's the probability of getting 4 of the 5?
             0.004
             >>> sum([h==i for i in (0, 1, 2, 3, 4, 5)])  # sum of all discrete probabilities
             1.0
-            
+
             >>> n = N(0, 1)  # Normal distribution (PDF)
             >>> n==0  # what's the probability of being exactly 0.0?
             0.0
@@ -382,13 +382,13 @@ class UncertainFunction(object):
             return not (diff.mean or diff.var or diff.skew or diff.kurt)
         else:
             return len(self._mcpts[self._mcpts==val])/float(npts)
-    
+
     def __ne__(self, val):
         if isinstance(val, UncertainFunction):
             return not self==val
         else:
             return 1 - (self==val)
-    
+
     def __lt__(self, val):
         """
         If we are comparing two distributions, perform statistical tests,
@@ -404,13 +404,13 @@ class UncertainFunction(object):
                 return True if sgn==-1 else False
         else:
             return len(self._mcpts[self._mcpts<val])/float(npts)
-    
+
     def __le__(self, val):
         if isinstance(val, UncertainFunction):
             return self<val  # since it doesn't matter to the test
         else:
             return len(self._mcpts[self._mcpts<=val])/float(npts)
-    
+
     def __gt__(self, val):
         """
         If we are comparing two distributions, perform statistical tests,
@@ -426,7 +426,7 @@ class UncertainFunction(object):
                 return True if sgn==1 else False
         else:
             return 1 - (self<=val)
-    
+
     def __ge__(self, val):
         if isinstance(val, UncertainFunction):
             return self>val
@@ -440,8 +440,8 @@ class UncertainFunction(object):
 
 class UncertainVariable(UncertainFunction):
     """
-    UncertainVariable objects track the effects of uncertainty, characterized 
-    in terms of the first four standard moments of statistical distributions 
+    UncertainVariable objects track the effects of uncertainty, characterized
+    in terms of the first four standard moments of statistical distributions
     (mean, variance, skewness and kurtosis coefficients). Monte Carlo simulation,
     in conjunction with Latin-hypercube based sampling performs the calculations.
 
@@ -449,34 +449,34 @@ class UncertainVariable(UncertainFunction):
     ----------
     rv : scipy.stats.distribution
         A distribution to characterize the uncertainty
-    
+
     tag : str, optional
         A string identifier when information about this variable is printed to
         the screen
-        
+
     Notes
     -----
-    
+
     The ``scipy.stats`` module contains many distributions which we can use to
     perform any necessary uncertainty calculation. It is important to follow
     the initialization syntax for creating any kind of distribution object:
-        
-        - *Location* and *Scale* values must use the kwargs ``loc`` and 
+
+        - *Location* and *Scale* values must use the kwargs ``loc`` and
           ``scale``
-        - *Shape* values are passed in as non-keyword arguments before the 
+        - *Shape* values are passed in as non-keyword arguments before the
           location and scale, (see below for syntax examples)..
-        
-    The mathematical operations that can be performed on uncertain objects will 
-    work for any distribution supplied, but may be misleading if the supplied 
-    moments or distribution is not accurately defined. Here are some guidelines 
-    for creating UncertainVariable objects using some of the most common 
+
+    The mathematical operations that can be performed on uncertain objects will
+    work for any distribution supplied, but may be misleading if the supplied
+    moments or distribution is not accurately defined. Here are some guidelines
+    for creating UncertainVariable objects using some of the most common
     statistical distributions:
-    
+
     +---------------------------+-------------+-------------------+-----+---------+
     | Distribution              | scipy.stats |  args             | loc | scale   |
     |                           | class name  | (shape params)    |     |         |
     +===========================+=============+===================+=====+=========+
-    | Normal(mu, sigma)         | norm        |                   | mu  | sigma   | 
+    | Normal(mu, sigma)         | norm        |                   | mu  | sigma   |
     +---------------------------+-------------+-------------------+-----+---------+
     | Uniform(a, b)             | uniform     |                   | a   | b-a     |
     +---------------------------+-------------+-------------------+-----+---------+
@@ -508,19 +508,19 @@ class UncertainVariable(UncertainFunction):
     +---------------------------+-------------+-------------------+-----+---------+
     | Poisson(lamda)            | poisson     | lamda             |     |         |
     +---------------------------+-------------+-------------------+-----+---------+
-    
+
     Thus, each distribution above would have the same call signature::
-        
+
         >>> import scipy.stats as ss
         >>> ss.your_dist_here(args, loc=loc, scale=scale)
-        
+
     ANY SCIPY.STATS.DISTRIBUTION SHOULD WORK! IF ONE DOESN'T, PLEASE LET ME
     KNOW!
-    
-    Convenient constructors have been created to make assigning these 
+
+    Convenient constructors have been created to make assigning these
     distributions easier. They follow the parameter notation found in the
     respective Wikipedia articles:
-    
+
     +---------------------------+---------------------------------------------------------------+
     | MCERP Distibution         | Wikipedia page                                                |
     +===========================+===============================================================+
@@ -565,11 +565,11 @@ class UncertainVariable(UncertainFunction):
     Examples
     --------
     A three-part assembly
-        
+
         >>> x1 = N(24, 1)
         >>> x2 = N(37, 4)
         >>> x3 = Exp(2)  # Exp(mu=0.5) works too
-        
+
         >>> Z = (x1*x2**2)/(15*(1.5 + x3))
         >>> Z
         uv(1161.46231679, 116646.762981, 0.345533974771, 3.00791101068)
@@ -577,89 +577,89 @@ class UncertainVariable(UncertainFunction):
     The result shows the mean, variance, and standardized skewness and kurtosis
     of the output variable Z, which will vary from use to use due to the random
     nature of Monte Carlo simulation and latin-hypercube sampling techniques.
-    
-    Basic math operations may be applied to distributions, where all 
+
+    Basic math operations may be applied to distributions, where all
     statistical calculations are performed using latin-hypercube enhanced Monte
-    Carlo simulation. Nearly all of the built-in trigonometric-, logarithm-, 
-    etc. functions of the ``math`` module have uncertainty-compatible 
-    counterparts that should be used when possible since they support both 
-    scalar values and uncertain objects. These can be used after importing the 
+    Carlo simulation. Nearly all of the built-in trigonometric-, logarithm-,
+    etc. functions of the ``math`` module have uncertainty-compatible
+    counterparts that should be used when possible since they support both
+    scalar values and uncertain objects. These can be used after importing the
     ``umath`` module::
-        
+
         >>> from mcerp3.umath import * # sin(), sqrt(), etc.
         >>> sqrt(x1)
         uv(4.89791765647, 0.0104291897681, -0.0614940614672, 3.00264937735)
-    
+
     At any time, the standardized statistics can be retrieved using::
-        
+
         >>> x1.mean
         >>> x1.var  # x1.std (standard deviation) is also available
         >>> x1.skew
         >>> x1.kurt
-    
+
     or all four together with::
-    
+
         >>> x1.stats
-    
+
     By default, the Monte Carlo simulation uses 10000 samples, but this can be
     changed at any time with::
-        
+
         >>> mcerp3.npts = number_of_samples
-    
+
     Any value from 1,000 to 1,000,000 is recommended (more samples means more
-    accurate, but also means more time required to perform the calculations). 
+    accurate, but also means more time required to perform the calculations).
     Although it can be changed, since variables retain their samples from one
-    calculation to the next, this parameter should be changed before any 
-    calculations are performed to ensure parameter compatibility (this may 
+    calculation to the next, this parameter should be changed before any
+    calculations are performed to ensure parameter compatibility (this may
     change to be more dynamic in the future, but for now this is how it is).
-    
+
     Also, to see the underlying distribution of the variable, and if matplotlib
     is installed, simply call its plot method::
-        
+
         >>> x1.plot()
-    
+
     Optional kwargs can be any valid kwarg used by matplotlib.pyplot.plot
-    
+
     See Also
     --------
-    N, U, Exp, Gamma, Beta, LogN, X2, F, Tri, PERT, T, Weib, Bern, B, G, H, 
+    N, U, Exp, Gamma, Beta, LogN, X2, F, Tri, PERT, T, Weib, Bern, B, G, H,
     Pois
-        
+
     """
-    
+
     def __init__(self, rv, tag=None):
-        
+
         assert hasattr(rv, 'dist'), 'Input must be a  distribution from ' + \
             'the scipy.stats module.'
         self.rv = rv
-        
+
         # generate the latin-hypercube points
         self._mcpts = lhd(dist=self.rv, size=npts).flatten()
         self.tag = tag
-        
+
     def plot(self, hist=False, show=False, **kwargs):
         """
-        Plot the distribution of the UncertainVariable. Continuous 
+        Plot the distribution of the UncertainVariable. Continuous
         distributions are plotted with a line plot and discrete distributions
         are plotted with discrete circles.
-        
+
         Optional
         --------
         hist : bool
             If true, a histogram is displayed
         show : bool
-            If ``True``, the figure will be displayed after plotting the 
+            If ``True``, the figure will be displayed after plotting the
             distribution. If ``False``, an explicit call to ``plt.show()`` is
             required to display the figure.
         kwargs : any valid matplotlib.pyplot.plot kwarg
-        
+
         """
-        
+
         if hist:
             vals = self._mcpts
             low = vals.min()
             high = vals.max()
-            h = plt.hist(vals, bins=int(np.sqrt(len(vals)) + 0.5), 
+            h = plt.hist(vals, bins=int(np.sqrt(len(vals)) + 0.5),
                      histtype='stepfilled', normed=True, **kwargs)
             plt.ylim(0, 1.1*h[0].max())
         else:
@@ -675,11 +675,11 @@ class UncertainVariable(UncertainFunction):
                 vals = np.linspace(low, high, 500)
                 plt.plot(vals, self.rv.pdf(vals), **kwargs)
         plt.xlim(low - (high - low)*0.1, high + (high - low)*0.1)
-        
+
         if show:
             self.show()
-                
-        
+
+
 uv = UncertainVariable # a nicer form for the user
 
 # DON'T MOVE THIS IMPORT!!! The prior definitions must be in place before
@@ -690,7 +690,7 @@ from . import stats
 
 ###############################################################################
 # Define some convenience constructors for common statistical distributions.
-# Hopefully these are a little easier/more intuitive to use than the 
+# Hopefully these are a little easier/more intuitive to use than the
 # scipy.stats.distributions.
 ###############################################################################
 
@@ -701,14 +701,14 @@ from . import stats
 def Beta(alpha, beta, low=0, high=1, tag=None):
     """
     A Beta random variate
-    
+
     Parameters
     ----------
     alpha : scalar
         The first shape parameter
     beta : scalar
         The second shape parameter
-    
+
     Optional
     --------
     low : scalar
@@ -725,14 +725,14 @@ def Beta(alpha, beta, low=0, high=1, tag=None):
 def BetaPrime(alpha, beta, tag=None):
     """
     A BetaPrime random variate
-    
+
     Parameters
     ----------
     alpha : scalar
         The first shape parameter
     beta : scalar
         The second shape parameter
-    
+
     """
     assert alpha>0 and beta>0, 'BetaPrime "alpha" and "beta" parameters must be greater than zero'
     x = Beta(alpha, beta, tag)
@@ -743,7 +743,7 @@ def BetaPrime(alpha, beta, tag=None):
 def Bradford(q, low=0, high=1, tag=None):
     """
     A Bradford random variate
-    
+
     Parameters
     ----------
     q : scalar
@@ -762,14 +762,14 @@ def Bradford(q, low=0, high=1, tag=None):
 def Burr(c, k, tag=None):
     """
     A Burr random variate
-    
+
     Parameters
     ----------
     c : scalar
         The first shape parameter
     k : scalar
         The second shape parameter
-    
+
     """
     assert c>0 and k>0, 'Burr "c" and "k" parameters must be greater than zero'
     return uv(ss.burr(c, k), tag=tag)
@@ -779,7 +779,7 @@ def Burr(c, k, tag=None):
 def ChiSquared(k, tag=None):
     """
     A Chi-Squared random variate
-    
+
     Parameters
     ----------
     k : int
@@ -794,12 +794,12 @@ Chi2 = ChiSquared  # for more concise use
 
 def Erf(h, tag=None):
     """
-    An Error Function random variate. 
-    
-    This distribution is derived from a normal distribution by setting 
-    m = 0 and s = 1/(h*sqrt(2)), and thus is used in similar situations 
+    An Error Function random variate.
+
+    This distribution is derived from a normal distribution by setting
+    m = 0 and s = 1/(h*sqrt(2)), and thus is used in similar situations
     as the normal distribution.
-    
+
     Parameters
     ----------
     h : scalar
@@ -813,12 +813,12 @@ def Erf(h, tag=None):
 def Erlang(k, lamda, tag=None):
     """
     An Erlang random variate.
-    
-    This distribution is the same as a Gamma(k, theta) distribution, but 
+
+    This distribution is the same as a Gamma(k, theta) distribution, but
     with the restriction that k must be a positive integer. This
     is provided for greater compatibility with other simulation tools, but
     provides no advantage over the Gamma distribution in its applications.
-    
+
     Parameters
     ----------
     k : int
@@ -835,7 +835,7 @@ def Erlang(k, lamda, tag=None):
 def Exponential(lamda, tag=None):
     """
     An Exponential random variate
-    
+
     Parameters
     ----------
     lamda : scalar
@@ -851,7 +851,7 @@ Exp = Exponential  # for more concise use
 def ExtValueMax(mu, sigma, tag=None):
     """
     An Extreme Value Maximum random variate.
-    
+
     Parameters
     ----------
     mu : scalar
@@ -870,7 +870,7 @@ EVMax = ExtValueMax  # for more concise use
 def ExtValueMin(mu, sigma, tag=None):
     """
     An Extreme Value Minimum random variate.
-    
+
     Parameters
     ----------
     mu : scalar
@@ -889,7 +889,7 @@ EVMin = ExtValueMin  # for more concise use
 def Fisher(d1, d2, tag=None):
     """
     An F (fisher) random variate
-    
+
     Parameters
     ----------
     d1 : int
@@ -908,7 +908,7 @@ F = Fisher  # for more concise use
 def Gamma(k, theta, tag=None):
     """
     A Gamma random variate
-    
+
     Parameters
     ----------
     k : scalar
@@ -924,7 +924,7 @@ def Gamma(k, theta, tag=None):
 def LogNormal(mu, sigma, tag=None):
     """
     A Log-Normal random variate
-    
+
     Parameters
     ----------
     mu : scalar
@@ -942,7 +942,7 @@ LogN = LogNormal  # for more concise use
 def Normal(mu, sigma, tag=None):
     """
     A Normal (or Gaussian) random variate
-    
+
     Parameters
     ----------
     mu : scalar
@@ -960,7 +960,7 @@ N = Normal  # for more concise use
 def Pareto(q, a, tag=None):
     """
     A Pareto random variate (first kind)
-    
+
     Parameters
     ----------
     q : scalar
@@ -978,7 +978,7 @@ def Pareto2(q, b, tag=None):
     """
     A Pareto random variate (second kind). This form always starts at the
     origin.
-    
+
     Parameters
     ----------
     q : scalar
@@ -994,7 +994,7 @@ def Pareto2(q, b, tag=None):
 def PERT(low, peak, high, g=4.0, tag=None):
     """
     A PERT random variate
-    
+
     Parameters
     ----------
     low : scalar
@@ -1003,12 +1003,12 @@ def PERT(low, peak, high, g=4.0, tag=None):
         The location of the distribution's peak (low <= peak <= high)
     high : scalar
         Upper bound of the distribution support
-    
+
     Optional
     --------
     g : scalar
         Controls the uncertainty of the distribution around the peak. Smaller
-        values make the distribution flatter and more uncertain around the 
+        values make the distribution flatter and more uncertain around the
         peak while larger values make it focused and less uncertain around
         the peak. (Default: 4)
     """
@@ -1021,7 +1021,7 @@ def PERT(low, peak, high, g=4.0, tag=None):
     else:
         a1 = ((mu - a)*(2*b - a - c))/((b - mu)*(c - a))
         a2 = a1*(c - mu)/(mu - a)
-        
+
     return Beta(a1, a2, a, c, tag)
 
 ###############################################################################
@@ -1029,7 +1029,7 @@ def PERT(low, peak, high, g=4.0, tag=None):
 def StudentT(v, tag=None):
     """
     A Student-T random variate
-    
+
     Parameters
     ----------
     v : int
@@ -1045,7 +1045,7 @@ T = StudentT  # for more concise use
 def Triangular(low, peak, high, tag=None):
     """
     A triangular random variate
-    
+
     Parameters
     ----------
     low : scalar
@@ -1057,7 +1057,7 @@ def Triangular(low, peak, high, tag=None):
     """
     assert low<=peak<=high, 'Triangular "peak" must lie between "low" and "high"'
     low, peak, high = [float(x) for x in [low, peak, high]]
-    return uv(ss.triang((1.0*peak - low)/(high - low), loc=low, 
+    return uv(ss.triang((1.0*peak - low)/(high - low), loc=low,
         scale=(high - low)), tag=tag)
 
 Tri = Triangular  # for more concise use
@@ -1067,7 +1067,7 @@ Tri = Triangular  # for more concise use
 def Uniform(low, high, tag=None):
     """
     A Uniform random variate
-    
+
     Parameters
     ----------
     low : scalar
@@ -1085,7 +1085,7 @@ U = Uniform  # for more concise use
 def Weibull(lamda, k, tag=None):
     """
     A Weibull random variate
-    
+
     Parameters
     ----------
     lamda : scalar
@@ -1105,7 +1105,7 @@ Weib = Weibull  # for more concise use
 def Bernoulli(p, tag=None):
     """
     A Bernoulli random variate
-    
+
     Parameters
     ----------
     p : scalar
@@ -1121,7 +1121,7 @@ Bern = Bernoulli  # for more concise use
 def Binomial(n, p, tag=None):
     """
     A Binomial random variate
-    
+
     Parameters
     ----------
     n : int
@@ -1140,7 +1140,7 @@ B = Binomial  # for more concise use
 def Geometric(p, tag=None):
     """
     A Geometric random variate
-    
+
     Parameters
     ----------
     p : scalar
@@ -1156,7 +1156,7 @@ G = Geometric  # for more concise use
 def Hypergeometric(N, n, K, tag=None):
     """
     A Hypergeometric random variate
-    
+
     Parameters
     ----------
     N : int
@@ -1165,7 +1165,7 @@ def Hypergeometric(N, n, K, tag=None):
         The number of individuals of interest in the population
     K : int
         The number of individuals that will be chosen from the population
-        
+
     Example
     -------
     (Taken from the wikipedia page) Assume we have an urn with two types of
@@ -1173,19 +1173,19 @@ def Hypergeometric(N, n, K, tag=None):
     close your eyes and draw 10 marbles without replacement. What is the
     probability that exactly 4 of the 10 are white?
     ::
-    
+
         >>> black = 45
         >>> white = 5
         >>> draw = 10
-        
+
         # Now we create the distribution
         >>> h = H(black + white, white, draw)
-        
+
         # To check the probability, in this case, we can use the underlying
         #  scipy.stats object
         >>> h.rv.pmf(4)  # What is the probability that white count = 4?
         0.0039645830580151975
-        
+
     """
     assert int(N)==N and N>0, 'Hypergeometric total population size "N" must be an integer greater than zero.'
     assert int(n)==n and 0<n<=N, 'Hypergeometric interest population size "n" must be an integer greater than zero and no more than the total population size.'
@@ -1199,7 +1199,7 @@ H = Hypergeometric  # for more concise use
 def Poisson(lamda, tag=None):
     """
     A Poisson random variate
-    
+
     Parameters
     ----------
     lamda : scalar
@@ -1218,20 +1218,20 @@ def covariance_matrix(nums_with_uncert):
     """
     Calculate the covariance matrix of uncertain variables, oriented by the
     order of the inputs
-    
+
     Parameters
     ----------
     nums_with_uncert : array-like
         A list of variables that have an associated uncertainty
-    
+
     Returns
     -------
     cov_matrix : 2d-array-like
         A nested list containing covariance values
-    
+
     Example
     -------
-    
+
         >>> x = N(1, 0.1)
         >>> y = N(10, 0.1)
         >>> z = x + 2*y
@@ -1251,7 +1251,7 @@ def covariance_matrix(nums_with_uncert):
             coef = np.mean((expr1._mcpts - mean1)*(expr2._mcpts - mean2))
             coefs_expr1.append(coef)
         cov_matrix.append(coefs_expr1)
-        
+
     # We symmetrize the matrix:
     for (i, covariance_coefs) in enumerate(cov_matrix):
         covariance_coefs.extend(cov_matrix[j][i]
@@ -1265,20 +1265,20 @@ def correlation_matrix(nums_with_uncert):
     """
     Calculate the correlation matrix of uncertain variables, oriented by the
     order of the inputs
-    
+
     Parameters
     ----------
     nums_with_uncert : array-like
         A list of variables that have an associated uncertainty
-    
+
     Returns
     -------
     corr_matrix : 2d-array-like
         A nested list containing covariance values
-    
+
     Example
     -------
-    
+
         >>> x = N(1, 0.1)
         >>> y = N(10, 0.1)
         >>> z = x + 2*y
@@ -1291,11 +1291,11 @@ def correlation_matrix(nums_with_uncert):
     ufuncs = list(map(to_uncertain_func, nums_with_uncert))
     data = np.vstack([ufunc._mcpts for ufunc in ufuncs])
     return np.corrcoef(data.T, rowvar=0)
-    
+
 if __name__=='__main__':
-    
+
     import mcerp3.umath as umath
-    
+
     print('*'*80)
     print('TEST FUNCTIONS USING DERIVED MOMENTS FROM SCIPY DISTRIBUTIONS')
     print('*'*80)
@@ -1305,7 +1305,7 @@ if __name__=='__main__':
     x3 = Exp(2)  # Exp(mu=0.5) is the same
     Z = (x1*x2**2)/(15*(1.5 + x3))
     Z.describe()
-    
+
     print('*'*80)
     print('Example of volumetric gas flow through orifice meter')
     H = N(64, 0.5)
