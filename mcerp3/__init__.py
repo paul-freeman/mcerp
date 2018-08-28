@@ -9,13 +9,13 @@ Copyright: 2013 - 2014
 Updates to Python 3 by Paul Freeman, 2018
 """
 
+import pkg_resources
 import numpy as np
 import scipy.stats as ss
 import matplotlib.pyplot as plt
 from .lhd import lhd
 
-__version_info__ = (1, 0, 2)
-__version__ = '.'.join(map(str, __version_info__))
+__version__ = pkg_resources.require('mcerp3')[0].version
 
 __author__ = 'Abraham Lee'
 

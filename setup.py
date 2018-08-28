@@ -1,15 +1,16 @@
 import os
 from setuptools import setup
-import mcerp3
+
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
+
 
 readme = 'README.rst'
 
 setup(
     name='mcerp3',
-    version=mcerp3.__version__,
+    version="1.0.3",
     author='Paul Freeman',
     description='Real-time latin-hypercube-sampling-based Monte Carlo Error Propagation',
     author_email='paul.freeman.cs@gmail.com',
@@ -19,12 +20,12 @@ setup(
     package_data={'': [readme]},
     packages=[
         'mcerp3',
-        ],
+    ],
     install_requires=[
         'numpy',
         'scipy',
         'matplotlib'
-        ],
+    ],
     keywords=[
         'monte carlo',
         'latin hypercube',
@@ -72,5 +73,5 @@ setup(
         'Topic :: Software Development :: Libraries',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Utilities'
-        ],
-    )
+    ],
+)
