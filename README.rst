@@ -1,11 +1,11 @@
-===============================
-``mcerp`` Package Documentation
-===============================
+================================
+``mcerp3`` Package Documentation
+================================
 
 Overview
 ========
 
-``mcerp`` is a stochastic calculator for `Monte Carlo methods`_ that uses 
+``mcerp3`` is a stochastic calculator for `Monte Carlo methods`_ that uses 
 `latin-hypercube sampling`_ to perform non-order specific 
 `error propagation`_ (or uncertainty analysis). 
 
@@ -26,19 +26,14 @@ as you desire!
 What's New In This Release
 ==========================
 
-- **Significant** speed enhancements in MCERP object creation.
+- this is a Python 3 release of the mcerp package by Abraham Lee
 
-- Updated *plotcorr* function to display correct plots when ``full``-kwarg is
-  set to ``False`` (i.e., to display only an upper triangular scatterplot
-  matrix).
-
-- Fixed a sign bug when two MCERP are compared with boolean operators >, <, 
-  etc.
+- available via ``conda`` or ``pip``
   
-- Improved boolean operators in general to handle MCERP objects that have
-  discrete values so that (``H(50, 5, 10)==4`` returns a meaningful probability
-  like the <, <=, >, >= operators do.
+- officially adds the 3-clause BSD licesnse text to the software
+  (this license has been specified in the mcerp PyPI package for years)  
 
+- supports SciPy >= 1.0 by removing the scipy.stats.signaltonoise function
 
 Main Features
 =============
@@ -65,63 +60,40 @@ Main Features
    functions. Depending on your version of Scipy, some functions might not
    work.
 
+8. Python 3 support
+
 Installation
 ============
-
-Required Packages
------------------
-
-The following packages should be installed automatically (if using ``pip``
-or ``easy_install``), otherwise they will need to be installed manually:
-
-- `NumPy`_ : Numeric Python
-- `SciPy`_ : Scientific Python
-- `Matplotlib`_ : Python plotting library
-
-These packages come standard in *Python(x,y)*, *Spyder*, and other 
-scientific computing python bundles.
 
 How to install
 --------------
 
-You have **several easy, convenient options** to install the ``mcerp`` 
-package (administrative privileges may be required)
+Effort has been made to ensure ``mcerp3`` is easy to install.
 
-#. Simply copy the unzipped ``mcerp-XYZ`` directory to any other location that
-   python can find it and rename it ``mcerp``.
-    
 #. From the command-line, do one of the following:
    
-   a. Manually download the package files below, unzip to any directory, and 
-      run::
+   a. Install the `conda package`_::
    
-       $ [sudo] python setup.py install
-
-   b. If ``setuptools`` is installed, run::
-
-       $ [sudo] easy_install [--upgrade] mcerp
+       $ conda install mcerp3 -c freemapa
     
-   c. If ``pip`` is installed, run::
+   b. Install the `PyPI package`_::
 
-       $ [sudo] pip install [--upgrade] mcerp
+       $ pip install mcerp3
 
-Python 3
---------
+The `source code`_ is also freely available, in case you would like to
+incorporate it directly into your project. However, when possible, it is
+usually easier to let your package manager handle things for you.
 
-To use this package with Python 3.x, you will need to run the ``2to3`` 
-conversion tool at the command-line using the following syntax while in the 
-unzipped ``mcerp`` directory::
+Required Packages
+-----------------
 
-    $ 2to3 -w .
-    
-This should take care of the main changes required. Then, run::
+The following packages are required, but should be installed automatically
+(if using ``conda`` or ``pip``). Otherwise, they may need to be installed
+manually:
 
-    $ python3 setup.py install
-
-If bugs continue to pop up, please email the author.
-
-You can also get the bleeding-edge code from `GitHub`_ (though I can't 
-promise there won't be stability issues...).
+- `NumPy`_ : Numeric Python
+- `SciPy`_ : Scientific Python
+- `Matplotlib`_ : Python plotting library
 
 See also
 ========
@@ -132,8 +104,9 @@ See also
 Contact
 =======
 
-Please send **feature requests, bug reports, or feedback** to 
-`Abraham Lee`_.
+Bugs should be reported on the `GitHub issues`_ page. Python 3 related
+requests can be sent to `Paul Freeman`_. Other issues should be referred to
+the original author, `Abraham Lee`_.
 
 
     
@@ -147,7 +120,11 @@ Please send **feature requests, bug reports, or feedback** to
 .. _Matplotlib: http://matplotlib.org/
 .. _scipy.stats: http://docs.scipy.org/doc/scipy/reference/stats.html
 .. _uncertainties: http://pypi.python.org/pypi/uncertainties
-.. _source code: https://github.com/tisimst/mcerp
+.. _source code: https://github.com/paul-freeman/mcerp
 .. _Abraham Lee: mailto:tisimst@gmail.com
-.. _package documentation: http://pythonhosted.org/mcerp
-.. _GitHub: http://github.com/tisimst/mcerp
+.. _Paul Freeman: mailto:paul.freeman.cs@gmail.com
+.. _package documentation: http://pythonhosted.org/mcerp3
+.. _GitHub: http://github.com/paul-freeman/mcerp
+.. _GitHub issues: http://github.com/paul-freeman/mcerp/issues
+.. _conda package: https://anaconda.org/freemapa/mcerp3
+.. _PyPI package: https://pypi.org/project/mcerp3/

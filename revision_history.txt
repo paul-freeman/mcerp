@@ -1,3 +1,22 @@
+mcerp3-1.0.2
+============
+
+- updated code to support SciPy >= 1.0.0
+
+mcerp3-1.0.1
+============
+
+- changed build script to restrict install to systems running scipy <= 0.19.1
+
+mcerp3-1.0.0
+============
+
+- updated for Python 3
+
+- changed instances where np.round() calls were expected to return an integer
+
+- added 3-clause BSD License text
+
 mcerp-0.9.2
 ===========
 

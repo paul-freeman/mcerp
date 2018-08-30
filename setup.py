@@ -1,49 +1,39 @@
 import os
 from setuptools import setup
-#import distutils.core
 
-## Building through 2to3, for Python 3 (see also setup(...,
-## cmdclass=...), below:
-#try:
-    #from distutils.command.build_py import build_py_2to3 as build_py
-#except ImportError:
-    ## 2.x
-    #from distutils.command.build_py import build_py
-
-import mcerp
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+
 readme = 'README.rst'
 
-#distutils.core.setup(
 setup(
-    name='mcerp',
-    version=mcerp.__version__,
-    author='Abraham Lee',
+    name='mcerp3',
+    version="1.0.3",
+    author='Paul Freeman',
     description='Real-time latin-hypercube-sampling-based Monte Carlo Error Propagation',
-    author_email='tisimst@gmail.com',
-    url='https://github.com/tisimst/mcerp',
+    author_email='paul.freeman.cs@gmail.com',
+    url='https://github.com/paul-freeman/mcerp3',
     license='BSD License',
     long_description=read(readme),
     package_data={'': [readme]},
     packages=[
-        'mcerp', 
-        ],
+        'mcerp3',
+    ],
     install_requires=[
-        'numpy', 
-        'scipy', 
+        'numpy',
+        'scipy',
         'matplotlib'
-        ],
+    ],
     keywords=[
-        'monte carlo', 
-        'latin hypercube', 
-        'sampling calculator', 
-        'error propagation', 
-        'uncertainty', 
+        'monte carlo',
+        'latin hypercube',
+        'sampling calculator',
+        'error propagation',
+        'uncertainty',
         'risk analysis',
-        'error', 
+        'error',
         'real-time'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -68,13 +58,10 @@ setup(
         'Operating System :: POSIX',
         'Operating System :: Unix',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
-        #'Programming Language :: Python :: 3',
-        #'Programming Language :: Python :: 3.0',
-        #'Programming Language :: Python :: 3.1',
-        #'Programming Language :: Python :: 3.2',
-        #'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Education',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Chemistry',
@@ -86,6 +73,5 @@ setup(
         'Topic :: Software Development :: Libraries',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Utilities'
-        ],
-    #cmdclass={'build_py': build_py}
-    )
+    ],
+)

@@ -1,0 +1,39 @@
+package:
+    name: mcerp3
+    version: "{{ load_setup_py_data().version }}"
+
+source:
+    path: .
+
+build:
+    noarch: python
+    script: python setup.py install 
+
+requirements:
+    build:
+        - python
+        - matplotlib
+        - numpy
+        - scipy
+        - pyyaml
+        - setuptools
+
+    run:
+        - python
+        - matplotlib
+        - numpy
+        - scipy
+
+test:
+    requires:
+        - python
+        - matplotlib
+        - numpy
+        - scipy
+    import:
+        - mcerp3
+
+about:
+    home: https://github.com/paul-freeman/mcerp
+    license: GPL
+    license_file: LICENSE

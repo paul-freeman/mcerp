@@ -43,11 +43,11 @@ source_suffix = '.rst'
 master_doc = 'index_TOC'
 
 # General information about the project.
-project = u'mcerp Python package'
+project = 'mcerp Python package'
 if date.today().year!=2013:
-    copyright = u'2013–%d, Abraham Lee' % date.today().year
+    copyright = '2013–%d, Abraham Lee' % date.today().year
 else:
-    copyright = u'2013, Abraham Lee'
+    copyright = '2013, Abraham Lee'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
