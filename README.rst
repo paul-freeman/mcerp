@@ -27,6 +27,8 @@ What's New In This Release
 ==========================
 
 - this is a Python 3 release of the mcerp package by Abraham Lee
+
+- available via ``conda`` or ``pip``
   
 - officially adds the 3-clause BSD licesnse text to the software
   (this license has been specified in the mcerp PyPI package for years)  
@@ -63,42 +65,35 @@ Main Features
 Installation
 ============
 
+How to install
+--------------
+
+Effort has been made to ensure ``mcerp3`` is easy to install.
+
+#. From the command-line, do one of the following:
+   
+   a. Install the `conda package`_::
+   
+       $ conda install mcerp3 -c freemapa
+    
+   b. Install the `PyPI package`_::
+
+       $ pip install mcerp3
+
+The `source code`_ is also freely available, in case you would like to
+incorporate it directly into your project. However, when possible, it is
+usually easier to let your package manager handle things for you.
+
 Required Packages
 -----------------
 
-The following packages should be installed automatically (if using ``pip``
-or ``easy_install``), otherwise they will need to be installed manually:
+The following packages are required, but should be installed automatically
+(if using ``conda`` or ``pip``). Otherwise, they may need to be installed
+manually:
 
 - `NumPy`_ : Numeric Python
 - `SciPy`_ : Scientific Python
 - `Matplotlib`_ : Python plotting library
-
-These packages come standard in *Python(x,y)*, *Spyder*, and other 
-scientific computing python bundles.
-
-How to install
---------------
-
-You have **several easy, convenient options** to install the ``mcerp3`` 
-package (administrative privileges may be required)
-
-#. Simply copy the unzipped ``mcerp3-XYZ`` directory to any other location that
-   python can find it and rename it ``mcerp3``.
-    
-#. From the command-line, do one of the following:
-   
-   a. Manually download the package files below, unzip to any directory, and 
-      run::
-   
-       $ [sudo] python setup.py install
-
-   b. If ``setuptools`` is installed, run::
-
-       $ [sudo] easy_install [--upgrade] mcerp3
-    
-   c. If ``pip`` is installed, run::
-
-       $ [sudo] pip install [--upgrade] mcerp3
 
 See also
 ========
@@ -109,8 +104,9 @@ See also
 Contact
 =======
 
-Please send **Python 3 related issues** to `Paul Freeman`_. Other issues should
-be referred to the original author, `Abraham Lee`_.
+Bugs should be reported on the `GitHub issues`_ page. Python 3 related
+requests can be sent to `Paul Freeman`_. Other issues should be referred to
+the original author, `Abraham Lee`_.
 
 
     
@@ -129,3 +125,6 @@ be referred to the original author, `Abraham Lee`_.
 .. _Paul Freeman: mailto:paul.freeman.cs@gmail.com
 .. _package documentation: http://pythonhosted.org/mcerp3
 .. _GitHub: http://github.com/paul-freeman/mcerp
+.. _GitHub issues: http://github.com/paul-freeman/mcerp/issues
+.. _conda package: https://anaconda.org/freemapa/mcerp3
+.. _PyPI package: https://pypi.org/project/mcerp3/
